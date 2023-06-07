@@ -11,6 +11,9 @@ struct ContentView: View {
     @State private var showingScore = false
     @State private var scoreTitle = ""
     @State private var score = 0
+    @State private var gameCounter = 0
+
+    @State private var isGameOver = false
 
     @State private var countries = [
         "Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US",
@@ -78,6 +81,15 @@ struct ContentView: View {
         } message: {
             Text("Your score is  \(score)")
         }
+        .alert("Your final score is \(score)", isPresented: $isGameOver) {
+            Button("Restart", action: reset)
+        } message: {
+            Text("Game over!")
+        }
+    }
+
+    func reset() {
+        score = 0
     }
 
     func flagTapped(_ number: Int) {
@@ -89,6 +101,13 @@ struct ContentView: View {
         }
 
         showingScore = true
+        gameCounter += 1
+
+        if gameCounter >= 10 {
+            showingScore = false
+            isGameOver = true
+            gameCounter = 0
+        }
     }
 
     func askQuestion() {
