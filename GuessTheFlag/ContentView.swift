@@ -21,6 +21,8 @@ struct ContentView: View {
 
     @State private var correctAnswer = Int.random(in: 0 ... 2)
 
+    @State private var rotationAmount = 0.0
+
     var body: some View {
         ZStack {
             RadialGradient(stops: [
@@ -51,13 +53,19 @@ struct ContentView: View {
 
                     ForEach(0 ..< 3) { number in
                         Button {
-                            flagTapped(number)
+                            withAnimation {
+                                flagTapped(number)
+                                rotationAmount += 360
+                            }
                         } label: {
                             Image(countries[number])
                                 .renderingMode(.original)
                                 .clipShape(Capsule())
                                 .shadow(radius: 5)
                         }
+                        .rotation3DEffect(
+                            .degrees(rotationAmount),
+                            axis: (x: 0, y: 1, z: 0))
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -76,6 +84,7 @@ struct ContentView: View {
             }
             .padding()
         }
+
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
         } message: {
